@@ -40,27 +40,31 @@ export const MiddleSquare = () => {
   return (
     <View style={styles.container}>
       <View style={styles.form}>
-        <CustomInput
-          name="seed"
-          control={control}
-          label="Semilla"
-          placeholder="Semilla"
-          selectionColor="#e91e63"
-          keyboardType="numeric"
-        />
-        <CustomInput
-          name="n"
-          control={control}
-          label="n"
-          placeholder="n"
-          selectionColor="#e91e63"
-          keyboardType="numeric"
-        />
-        <View style={{ width: "100%" }}>
-          <CustomButton onPress={handleSubmit(generateNumbers)}>
-            Generar
-          </CustomButton>
+        <View style={styles.formInput}>
+          <CustomInput
+            name="seed"
+            control={control}
+            label="Semilla"
+            placeholder="Semilla"
+            selectionColor="#e91e63"
+            keyboardType="numeric"
+          />
         </View>
+        <View style={styles.formInput}>
+          <CustomInput
+            name="n"
+            control={control}
+            label="n"
+            placeholder="n"
+            selectionColor="#e91e63"
+            keyboardType="numeric"
+          />
+        </View>
+      </View>
+      <View style={styles.formActions}>
+        <CustomButton onPress={handleSubmit(generateNumbers)}>
+          Generar
+        </CustomButton>
       </View>
       <View style={styles.numbersList}>
         <ScrollView contentContainerStyle={{ paddingHorizontal: 16 }}>
@@ -76,7 +80,7 @@ export const MiddleSquare = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    gap: 8,
+    gap: 16,
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
@@ -87,15 +91,18 @@ const styles = StyleSheet.create({
     gap: 16,
     flexDirection: "row",
     flexWrap: "wrap",
-    // justifyContent: "center",
+    justifyContent: "stretch",
     alignItems: "center",
   },
   formInput: {
-    borderWidth: 1,
-    borderColor: "#e91e63",
-    borderRadius: 8,
-    padding: 8,
+    flex: 1,
+  },
+  formActions: {
+    flex: 1,
     width: "100%",
+    alignItems: "stretch",
+    paddingHorizontal: 16,
+    gap: 8,
   },
   numbersList: {
     flex: 2,

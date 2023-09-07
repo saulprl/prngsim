@@ -44,35 +44,41 @@ export const Multiplicative = () => {
   return (
     <View style={styles.container}>
       <View style={styles.form}>
-        <CustomInput
-          name="seed"
-          control={control}
-          label="Semilla"
-          placeholder="Semilla"
-          selectionColor="#e91e63"
-          keyboardType="numeric"
-        />
-        <CustomInput
-          name="g"
-          control={control}
-          label="g"
-          placeholder="g"
-          selectionColor="#e91e63"
-          keyboardType="numeric"
-        />
-        <CustomInput
-          name="k"
-          control={control}
-          label="k"
-          placeholder="k"
-          selectionColor="#e91e63"
-          keyboardType="numeric"
-        />
-        <View style={{ width: "100%" }}>
-          <CustomButton onPress={handleSubmit(generateNumbers)}>
-            Generar
-          </CustomButton>
+        <View style={styles.formInput}>
+          <CustomInput
+            name="seed"
+            control={control}
+            label="Semilla"
+            placeholder="Semilla"
+            selectionColor="#e91e63"
+            keyboardType="numeric"
+          />
         </View>
+        <View style={styles.formInput}>
+          <CustomInput
+            name="g"
+            control={control}
+            label="g"
+            placeholder="g"
+            selectionColor="#e91e63"
+            keyboardType="numeric"
+          />
+        </View>
+        <View style={styles.formInput}>
+          <CustomInput
+            name="k"
+            control={control}
+            label="k"
+            placeholder="k"
+            selectionColor="#e91e63"
+            keyboardType="numeric"
+          />
+        </View>
+      </View>
+      <View style={styles.formActions}>
+        <CustomButton onPress={handleSubmit(generateNumbers)}>
+          Generar
+        </CustomButton>
       </View>
       <View style={styles.numbersList}>
         <FlatList
@@ -94,21 +100,22 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   form: {
-    // flex: 1,
     width: "100%",
     paddingHorizontal: 16,
     gap: 16,
     flexWrap: "wrap",
     flexDirection: "row",
     alignItems: "center",
-    // justifyContent: "center",
   },
   formInput: {
-    borderWidth: 1,
-    borderColor: "#e91e63",
-    borderRadius: 8,
-    padding: 8,
+    flex: 1,
+  },
+  formActions: {
+    flex: 1,
     width: "100%",
+    alignItems: "stretch",
+    paddingHorizontal: 16,
+    gap: 8,
   },
   numbersList: {
     flex: 3,
