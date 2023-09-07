@@ -14,7 +14,7 @@ interface ConstantMultiplierForm {
 }
 
 export const ConstantMultiplier = () => {
-  const [numbers, setNumbers] = useState([]);
+  const [numbers, setNumbers] = useState<RNGItem[]>([]);
   const { control, handleSubmit, reset } = useForm<ConstantMultiplierForm>();
 
   const generateNumbers = (data: ConstantMultiplierForm) => {
@@ -28,7 +28,7 @@ export const ConstantMultiplier = () => {
 
     if (a.toString().length !== digits) return;
 
-    const numbers = [];
+    const numbers: RNGItem[] = [];
 
     for (let i = 0; i < n; i++) {
       const multipliedSeed = a * seed;

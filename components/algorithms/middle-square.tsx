@@ -13,7 +13,7 @@ interface MiddleSquareForm {
 }
 
 export const MiddleSquare = () => {
-  const [numbers, setNumbers] = useState([]);
+  const [numbers, setNumbers] = useState<RNGItem[]>([]);
   const { control, handleSubmit } = useForm<MiddleSquareForm>();
 
   const generateNumbers = (data: MiddleSquareForm) => {

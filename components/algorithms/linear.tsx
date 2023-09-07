@@ -16,7 +16,7 @@ export interface LinearForm {
 }
 
 export const Linear = () => {
-  const [numbers, setNumbers] = useState([]);
+  const [numbers, setNumbers] = useState<RNGItem[]>([]);
   const { control, handleSubmit } = useForm<LinearForm>();
 
   const generateNumbers = (data: LinearForm) => {
@@ -30,7 +30,7 @@ export const Linear = () => {
     const multiplier = 1 + 4 * k;
     const modulus = Math.pow(2, g);
 
-    const numbers = [];
+    const numbers: RNGItem[] = [];
 
     for (let i = 0; i < modulus; i++) {
       seed = (multiplier * seed + c) % modulus;

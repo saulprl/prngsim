@@ -15,7 +15,7 @@ interface MultiplicativeForm {
 }
 
 export const Multiplicative = () => {
-  const [numbers, setNumbers] = useState([]);
+  const [numbers, setNumbers] = useState<RNGItem[]>([]);
   const { control, handleSubmit } = useForm<MultiplicativeForm>();
 
   const generateNumbers = (data: MultiplicativeForm) => {
@@ -29,7 +29,7 @@ export const Multiplicative = () => {
     const modulus = Math.pow(2, g);
     const period = modulus / 4;
 
-    const numbers = [];
+    const numbers: RNGItem[] = [];
 
     for (let i = 0; i < period; i++) {
       seed = (multiplier * seed) % modulus;

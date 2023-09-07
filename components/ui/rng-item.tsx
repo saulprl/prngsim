@@ -2,12 +2,14 @@ import { FC } from "react";
 
 import { StyleSheet, Text, View } from "react-native";
 
+export interface RNGItem {
+  random: number;
+  seed: number;
+  index: number;
+}
+
 interface Props {
-  number: {
-    random: number;
-    seed: number;
-    index: number;
-  };
+  number: RNGItem;
 }
 
 export const RNGItem: FC<Props> = ({ number: { random, seed, index } }) => {
