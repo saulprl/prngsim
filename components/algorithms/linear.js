@@ -103,7 +103,7 @@ export const Linear = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    gap: 8,
+    gap: 16,
     alignItems: "center",
     justifyContent: "flex-start",
     width: "100%",
