@@ -14,7 +14,7 @@ interface MiddleSquareForm {
 
 export const MiddleSquare = () => {
   const [numbers, setNumbers] = useState<RNGItem[]>([]);
-  const { control, handleSubmit } = useForm<MiddleSquareForm>();
+  const { control, handleSubmit, reset } = useForm<MiddleSquareForm>();
 
   const generateNumbers = (data: MiddleSquareForm) => {
     setNumbers([]);
@@ -41,6 +41,14 @@ export const MiddleSquare = () => {
       };
       setNumbers((prev) => [...prev, generatedNumber]);
     }
+  };
+
+  const handleClear = () => {
+    setNumbers([]);
+    reset({
+      seed: "",
+      n: "",
+    });
   };
 
   return (
@@ -70,6 +78,9 @@ export const MiddleSquare = () => {
       <View style={styles.formActions}>
         <CustomButton onPress={handleSubmit(generateNumbers)}>
           <CustomButtonTitle>Generar</CustomButtonTitle>
+        </CustomButton>
+        <CustomButton variant="outlined" onPress={handleClear}>
+          <CustomButtonTitle variant="outlined">Limpiar</CustomButtonTitle>
         </CustomButton>
       </View>
       <View style={styles.numbersList}>

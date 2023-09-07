@@ -16,7 +16,7 @@ interface MultiplicativeForm {
 
 export const Multiplicative = () => {
   const [numbers, setNumbers] = useState<RNGItem[]>([]);
-  const { control, handleSubmit } = useForm<MultiplicativeForm>();
+  const { control, handleSubmit, reset } = useForm<MultiplicativeForm>();
 
   const generateNumbers = (data: MultiplicativeForm) => {
     setNumbers([]);
@@ -45,6 +45,15 @@ export const Multiplicative = () => {
     }
 
     setNumbers(numbers);
+  };
+
+  const handleClear = () => {
+    setNumbers([]);
+    reset({
+      seed: "",
+      g: "",
+      k: "",
+    });
   };
 
   return (
@@ -84,6 +93,9 @@ export const Multiplicative = () => {
       <View style={styles.formActions}>
         <CustomButton onPress={handleSubmit(generateNumbers)}>
           <CustomButtonTitle>Generar</CustomButtonTitle>
+        </CustomButton>
+        <CustomButton variant="outlined" onPress={handleClear}>
+          <CustomButtonTitle variant="outlined">Limpiar</CustomButtonTitle>
         </CustomButton>
       </View>
       <View style={styles.numbersList}>

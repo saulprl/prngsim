@@ -98,16 +98,8 @@ export const ConstantMultiplier = () => {
         <CustomButton onPress={handleSubmit(generateNumbers)}>
           <CustomButtonTitle>Generar</CustomButtonTitle>
         </CustomButton>
-        <CustomButton
-          style={{
-            backgroundColor: "white",
-            borderWidth: 1,
-            borderColor: "#aaa",
-            borderRadius: 8,
-          }}
-          onPress={handleClear}
-        >
-          <CustomButtonTitle style={{ color: "#aaa" }}>
+        <CustomButton variant="outlined" onPress={handleClear}>
+          <CustomButtonTitle variant="outlined">
             Limpiar
           </CustomButtonTitle>
         </CustomButton>

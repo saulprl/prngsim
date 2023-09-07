@@ -17,7 +17,7 @@ export interface LinearForm {
 
 export const Linear = () => {
   const [numbers, setNumbers] = useState<RNGItem[]>([]);
-  const { control, handleSubmit } = useForm<LinearForm>();
+  const { control, handleSubmit, reset } = useForm<LinearForm>();
 
   const generateNumbers = (data: LinearForm) => {
     setNumbers([]);
@@ -46,6 +46,16 @@ export const Linear = () => {
     }
 
     setNumbers(numbers);
+  };
+
+  const handleClear = () => {
+    setNumbers([]);
+    reset({
+      seed: "",
+      g: "",
+      k: "",
+      c: "",
+    });
   };
 
   return (
@@ -95,6 +105,9 @@ export const Linear = () => {
       <View style={styles.formActions}>
         <CustomButton onPress={handleSubmit(generateNumbers)}>
           <CustomButtonTitle>Generar</CustomButtonTitle>
+        </CustomButton>
+        <CustomButton variant="outlined" onPress={handleClear}>
+          <CustomButtonTitle variant="outlined">Limpiar</CustomButtonTitle>
         </CustomButton>
       </View>
       <View style={styles.numbersList}>
