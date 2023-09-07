@@ -1,10 +1,39 @@
+import { FC } from "react";
+
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
-export const AlgorithmSelect = ({
-  algorithms,
-  selectedAlgorithm,
-  onSelect,
-}) => {
+import { ConstantMultiplier } from "../algorithms/constant-multiplier";
+import { Linear } from "../algorithms/linear";
+import { MiddleSquare } from "../algorithms/middle-square";
+import { Multiplicative } from "../algorithms/multiplicative";
+
+export const algorithms = {
+  "middle-square": {
+    name: "Cuadrados medios",
+    algo: MiddleSquare,
+  },
+  "linear-congruential": {
+    name: "Congruencia lineal",
+    algo: Linear,
+  },
+  "multiplicative-congruential": {
+    name: "Congruencia multiplicativa",
+    algo: Multiplicative,
+  },
+  "constant-multiplier": {
+    name: "Multiplicador constante",
+    algo: ConstantMultiplier,
+  },
+};
+
+export type AlgorithmKey = keyof typeof algorithms;
+
+interface Props {
+  selectedAlgorithm: AlgorithmKey;
+  onSelect: (key: AlgorithmKey) => void;
+}
+
+export const AlgorithmSelect: FC<Props> = ({ selectedAlgorithm, onSelect }) => {
   return (
     <View style={styles.wrapper}>
       <ScrollView contentContainerStyle={styles.radioGroup} horizontal={true}>

@@ -1,33 +1,43 @@
 import { useState } from "react";
 
-import { FlatList, StyleSheet, View } from "react-native";
-
 import { useForm } from "react-hook-form";
 
+import { FlatList, StyleSheet, View } from "react-native";
 import { CustomInput } from "../ui/custom-input";
-import { CustomButton } from "../ui/custom-button";
+import { CustomButton, CustomButtonTitle } from "../ui/custom-button";
 import { RNGItem } from "../ui/rng-item";
 
-export const Multiplicative = () => {
-  const [numbers, setNumbers] = useState([]);
-  const { control, handleSubmit } = useForm();
+interface ConstantMultiplierForm {
+  seed: string;
+  a: string;
+  n: string;
+}
 
-  const generateNumbers = (data) => {
+export const ConstantMultiplier = () => {
+  const [numbers, setNumbers] = useState([]);
+  const { control, handleSubmit, reset } = useForm<ConstantMultiplierForm>();
+
+  const generateNumbers = (data: ConstantMultiplierForm) => {
     setNumbers([]);
 
-    const g = +data.g;
-    const k = +data.k;
+    const a = +data.a;
+    const n = +data.n;
     let seed = +data.seed;
 
-    const multiplier = 3 + 8 * k;
-    const modulus = Math.pow(2, g);
-    const period = modulus / 4;
+    const digits = seed.toString().length;
+
+    if (a.toString().length !== digits) return;
 
     const numbers = [];
 
-    for (let i = 0; i < period; i++) {
-      seed = (multiplier * seed) % modulus;
-      const random = seed / (modulus - 1);
+    for (let i = 0; i < n; i++) {
+      const multipliedSeed = a * seed;
+      const seedString = multipliedSeed.toString();
+      const startIndex = (seedString.length - digits) / 2;
+      const endIndex = startIndex + digits;
+
+      seed = +multipliedSeed.toString().substring(startIndex, endIndex);
+      const random = seed / Math.pow(10, digits);
 
       const generatedNumber = {
         index: i + 1,
@@ -39,6 +49,15 @@ export const Multiplicative = () => {
     }
 
     setNumbers(numbers);
+  };
+
+  const handleClear = () => {
+    setNumbers([]);
+    reset({
+      seed: "",
+      a: "",
+      n: "",
+    });
   };
 
   return (
@@ -56,20 +75,20 @@ export const Multiplicative = () => {
         </View>
         <View style={styles.formInput}>
           <CustomInput
-            name="g"
+            name="a"
             control={control}
-            label="g"
-            placeholder="g"
+            label="a"
+            placeholder="a"
             selectionColor="#e91e63"
             keyboardType="numeric"
           />
         </View>
         <View style={styles.formInput}>
           <CustomInput
-            name="k"
+            name="n"
             control={control}
-            label="k"
-            placeholder="k"
+            label="n"
+            placeholder="n"
             selectionColor="#e91e63"
             keyboardType="numeric"
           />
@@ -77,7 +96,20 @@ export const Multiplicative = () => {
       </View>
       <View style={styles.formActions}>
         <CustomButton onPress={handleSubmit(generateNumbers)}>
-          <CustomButton.Title>Generar</CustomButton.Title>
+          <CustomButtonTitle>Generar</CustomButtonTitle>
+        </CustomButton>
+        <CustomButton
+          style={{
+            backgroundColor: "white",
+            borderWidth: 1,
+            borderColor: "#aaa",
+            borderRadius: 8,
+          }}
+          onPress={handleClear}
+        >
+          <CustomButtonTitle style={{ color: "#aaa" }}>
+            Limpiar
+          </CustomButtonTitle>
         </CustomButton>
       </View>
       <View style={styles.numbersList}>
@@ -111,7 +143,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   formActions: {
-    flex: 1,
     width: "100%",
     alignItems: "stretch",
     paddingHorizontal: 16,

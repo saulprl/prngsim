@@ -2,42 +2,45 @@ import { useState } from "react";
 
 import { useForm } from "react-hook-form";
 
-import { FlatList, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { CustomInput } from "../ui/custom-input";
-import { CustomButton } from "../ui/custom-button";
+import { CustomButton, CustomButtonTitle } from "../ui/custom-button";
 import { RNGItem } from "../ui/rng-item";
 
-export const Linear = () => {
-  const [numbers, setNumbers] = useState([]);
-  const { control, handleSubmit } = useForm();
+interface MiddleSquareForm {
+  seed: string;
+  n: string;
+}
 
-  const generateNumbers = (data) => {
+export const MiddleSquare = () => {
+  const [numbers, setNumbers] = useState([]);
+  const { control, handleSubmit } = useForm<MiddleSquareForm>();
+
+  const generateNumbers = (data: MiddleSquareForm) => {
     setNumbers([]);
 
-    const g = +data.g;
-    const k = +data.k;
-    const c = +data.c;
     let seed = +data.seed;
+    const n = +data.n;
+    const digits = seed.toString().length;
 
-    const multiplier = 1 + 4 * k;
-    const modulus = Math.pow(2, g);
+    if (digits < 4) return;
 
-    const numbers = [];
+    for (let i = 0; i < n; i++) {
+      const square = Math.pow(seed, 2);
+      const squareString = square.toString();
+      const startIndex = Math.floor((squareString.length - digits) / 2);
+      const endIndex = startIndex + digits;
 
-    for (let i = 0; i < modulus; i++) {
-      seed = (multiplier * seed + c) % modulus;
-      const random = seed / (modulus - 1);
+      seed = +squareString.substring(startIndex, endIndex);
+      const random = seed / Math.pow(10, digits);
 
       const generatedNumber = {
         index: i + 1,
         random,
         seed,
       };
-
-      numbers.push(generatedNumber);
+      setNumbers((prev) => [...prev, generatedNumber]);
     }
-
-    setNumbers(numbers);
   };
 
   return (
@@ -55,30 +58,10 @@ export const Linear = () => {
         </View>
         <View style={styles.formInput}>
           <CustomInput
-            name="g"
+            name="n"
             control={control}
-            label="g"
-            placeholder="g"
-            selectionColor="#e91e63"
-            keyboardType="numeric"
-          />
-        </View>
-        <View style={styles.formInput}>
-          <CustomInput
-            name="k"
-            control={control}
-            label="k"
-            placeholder="k"
-            selectionColor="#e91e63"
-            keyboardType="numeric"
-          />
-        </View>
-        <View style={styles.formInput}>
-          <CustomInput
-            name="c"
-            control={control}
-            label="c"
-            placeholder="c"
+            label="n"
+            placeholder="n"
             selectionColor="#e91e63"
             keyboardType="numeric"
           />
@@ -86,15 +69,15 @@ export const Linear = () => {
       </View>
       <View style={styles.formActions}>
         <CustomButton onPress={handleSubmit(generateNumbers)}>
-          <CustomButton.Title>Generar</CustomButton.Title>
+          <CustomButtonTitle>Generar</CustomButtonTitle>
         </CustomButton>
       </View>
       <View style={styles.numbersList}>
-        <FlatList
-          contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 16 }}
-          data={numbers}
-          renderItem={({ item }) => <RNGItem number={item} />}
-        />
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 16 }}>
+          {numbers.map((number, index) => (
+            <RNGItem key={`${number}-${index}`} number={number} />
+          ))}
+        </ScrollView>
       </View>
     </View>
   );
@@ -105,29 +88,28 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 16,
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     width: "100%",
   },
   form: {
     width: "100%",
     paddingHorizontal: 16,
     gap: 16,
-    flexWrap: "wrap",
     flexDirection: "row",
+    flexWrap: "wrap",
     alignItems: "center",
   },
   formInput: {
     flex: 1,
   },
   formActions: {
-    flex: 1,
     width: "100%",
     alignItems: "stretch",
     paddingHorizontal: 16,
     gap: 8,
   },
   numbersList: {
-    flex: 3,
+    flex: 2,
     width: "100%",
     gap: 16,
   },

@@ -3,35 +3,38 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { FlatList, StyleSheet, View } from "react-native";
+
+import { CustomButton, CustomButtonTitle } from "../ui/custom-button";
 import { CustomInput } from "../ui/custom-input";
-import { CustomButton } from "../ui/custom-button";
 import { RNGItem } from "../ui/rng-item";
 
-export const ConstantMultiplier = () => {
-  const [numbers, setNumbers] = useState([]);
-  const { control, handleSubmit, reset } = useForm();
+export interface LinearForm {
+  seed: string;
+  g: string;
+  k: string;
+  c: string;
+}
 
-  const generateNumbers = (data) => {
+export const Linear = () => {
+  const [numbers, setNumbers] = useState([]);
+  const { control, handleSubmit } = useForm<LinearForm>();
+
+  const generateNumbers = (data: LinearForm) => {
     setNumbers([]);
 
-    const a = +data.a;
-    const n = +data.n;
+    const g = +data.g;
+    const k = +data.k;
+    const c = +data.c;
     let seed = +data.seed;
 
-    const digits = seed.toString().length;
-
-    if (a.toString().length !== digits) return;
+    const multiplier = 1 + 4 * k;
+    const modulus = Math.pow(2, g);
 
     const numbers = [];
 
-    for (let i = 0; i < n; i++) {
-      const multipliedSeed = a * seed;
-      const seedString = multipliedSeed.toString();
-      const startIndex = (seedString.length - digits) / 2;
-      const endIndex = startIndex + digits;
-
-      seed = +multipliedSeed.toString().substring(startIndex, endIndex);
-      const random = seed / Math.pow(10, digits);
+    for (let i = 0; i < modulus; i++) {
+      seed = (multiplier * seed + c) % modulus;
+      const random = seed / (modulus - 1);
 
       const generatedNumber = {
         index: i + 1,
@@ -43,15 +46,6 @@ export const ConstantMultiplier = () => {
     }
 
     setNumbers(numbers);
-  };
-
-  const handleClear = () => {
-    setNumbers([]);
-    reset({
-      seed: "",
-      a: "",
-      n: "",
-    });
   };
 
   return (
@@ -69,20 +63,30 @@ export const ConstantMultiplier = () => {
         </View>
         <View style={styles.formInput}>
           <CustomInput
-            name="a"
+            name="g"
             control={control}
-            label="a"
-            placeholder="a"
+            label="g"
+            placeholder="g"
             selectionColor="#e91e63"
             keyboardType="numeric"
           />
         </View>
         <View style={styles.formInput}>
           <CustomInput
-            name="n"
+            name="k"
             control={control}
-            label="n"
-            placeholder="n"
+            label="k"
+            placeholder="k"
+            selectionColor="#e91e63"
+            keyboardType="numeric"
+          />
+        </View>
+        <View style={styles.formInput}>
+          <CustomInput
+            name="c"
+            control={control}
+            label="c"
+            placeholder="c"
             selectionColor="#e91e63"
             keyboardType="numeric"
           />
@@ -90,20 +94,7 @@ export const ConstantMultiplier = () => {
       </View>
       <View style={styles.formActions}>
         <CustomButton onPress={handleSubmit(generateNumbers)}>
-          <CustomButton.Title>Generar</CustomButton.Title>
-        </CustomButton>
-        <CustomButton
-          style={{
-            backgroundColor: "white",
-            borderWidth: 1,
-            borderColor: "#aaa",
-            borderRadius: 8,
-          }}
-          onPress={handleClear}
-        >
-          <CustomButton.Title style={{ color: "#aaa" }}>
-            Limpiar
-          </CustomButton.Title>
+          <CustomButtonTitle>Generar</CustomButtonTitle>
         </CustomButton>
       </View>
       <View style={styles.numbersList}>
@@ -137,7 +128,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   formActions: {
-    flex: 1,
     width: "100%",
     alignItems: "stretch",
     paddingHorizontal: 16,

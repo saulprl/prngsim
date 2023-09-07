@@ -1,14 +1,26 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { FC, ReactNode } from "react";
+import {
+  Pressable,
+  PressableProps,
+  StyleSheet,
+  Text,
+  TextProps,
+  View,
+} from "react-native";
 
-export const CustomButton = (props) => {
-  const { children, onPress, ...rest } = props;
+interface Props extends PressableProps {
+  children: ReactNode;
+}
+
+export const CustomButton: FC<Props> = (props) => {
+  const { children, onPress, style, ...rest } = props;
 
   return (
     <View style={styles.wrapper}>
       <Pressable
         {...rest}
         onPress={onPress}
-        style={[styles.button, rest?.style]}
+        style={[styles.button]}
         android_ripple={{ color: "#b00b41" }}
       >
         {children}
@@ -17,7 +29,7 @@ export const CustomButton = (props) => {
   );
 };
 
-CustomButton.Title = function CustomButtonTitle(props) {
+export const CustomButtonTitle: FC<TextProps> = (props) => {
   return <Text style={[styles.title, props?.style]}>{props.children}</Text>;
 };
 

@@ -1,7 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { HomeScreen } from "./screens/home";
+import { HomeScreen } from "@/screens/home";
 
 const Stack = createNativeStackNavigator();
 
@@ -13,7 +13,7 @@ export default function App() {
           name="Home"
           component={HomeScreen}
           options={{
-            title: "Pseudo RNG",
+            title: "pseudoRNG",
             headerStyle: {
               backgroundColor: "#e91e63",
             },

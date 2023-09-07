@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#e91e63"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -37,6 +35,9 @@
     },
     "updates": {
       "url": "https://u.expo.dev/dac1d0ba-26b8-4ce2-9540-2147a29b0aa0"
+    },
+    "experiments": {
+      "tsconfigPaths": true
     }
   }
 }

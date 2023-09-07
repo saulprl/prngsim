@@ -1,40 +1,50 @@
 import { useState } from "react";
 
+import { FlatList, StyleSheet, View } from "react-native";
+
 import { useForm } from "react-hook-form";
 
-import { ScrollView, StyleSheet, View } from "react-native";
 import { CustomInput } from "../ui/custom-input";
-import { CustomButton } from "../ui/custom-button";
+import { CustomButton, CustomButtonTitle } from "../ui/custom-button";
 import { RNGItem } from "../ui/rng-item";
 
-export const MiddleSquare = () => {
-  const [numbers, setNumbers] = useState([]);
-  const { control, handleSubmit } = useForm();
+interface MultiplicativeForm {
+  seed: string;
+  g: string;
+  k: string;
+}
 
-  const generateNumbers = (data) => {
+export const Multiplicative = () => {
+  const [numbers, setNumbers] = useState([]);
+  const { control, handleSubmit } = useForm<MultiplicativeForm>();
+
+  const generateNumbers = (data: MultiplicativeForm) => {
     setNumbers([]);
 
-    let seed = data.seed.toString();
-    const digits = seed.length;
+    const g = +data.g;
+    const k = +data.k;
+    let seed = +data.seed;
 
-    if (digits < 4) return;
+    const multiplier = 3 + 8 * k;
+    const modulus = Math.pow(2, g);
+    const period = modulus / 4;
 
-    for (let i = 0; i < data.n; i++) {
-      const square = Math.pow(seed, 2);
-      const squareString = square.toString();
-      const startIndex = Math.floor((squareString.length - digits) / 2);
-      const endIndex = startIndex + digits;
+    const numbers = [];
 
-      seed = +squareString.substring(startIndex, endIndex);
-      const random = seed / Math.pow(10, digits);
+    for (let i = 0; i < period; i++) {
+      seed = (multiplier * seed) % modulus;
+      const random = seed / (modulus - 1);
 
       const generatedNumber = {
         index: i + 1,
         random,
         seed,
       };
-      setNumbers((prev) => [...prev, generatedNumber]);
+
+      numbers.push(generatedNumber);
     }
+
+    setNumbers(numbers);
   };
 
   return (
@@ -52,10 +62,20 @@ export const MiddleSquare = () => {
         </View>
         <View style={styles.formInput}>
           <CustomInput
-            name="n"
+            name="g"
             control={control}
-            label="n"
-            placeholder="n"
+            label="g"
+            placeholder="g"
+            selectionColor="#e91e63"
+            keyboardType="numeric"
+          />
+        </View>
+        <View style={styles.formInput}>
+          <CustomInput
+            name="k"
+            control={control}
+            label="k"
+            placeholder="k"
             selectionColor="#e91e63"
             keyboardType="numeric"
           />
@@ -63,15 +83,15 @@ export const MiddleSquare = () => {
       </View>
       <View style={styles.formActions}>
         <CustomButton onPress={handleSubmit(generateNumbers)}>
-          <CustomButton.Title>Generar</CustomButton.Title>
+          <CustomButtonTitle>Generar</CustomButtonTitle>
         </CustomButton>
       </View>
       <View style={styles.numbersList}>
-        <ScrollView contentContainerStyle={{ paddingHorizontal: 16 }}>
-          {numbers.map((number, index) => (
-            <RNGItem key={`${number}-${index}`} number={number} />
-          ))}
-        </ScrollView>
+        <FlatList
+          contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 16 }}
+          data={numbers}
+          renderItem={({ item }) => <RNGItem number={item} />}
+        />
       </View>
     </View>
   );
@@ -82,30 +102,28 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 16,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     width: "100%",
   },
   form: {
     width: "100%",
     paddingHorizontal: 16,
     gap: 16,
-    flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "stretch",
+    flexDirection: "row",
     alignItems: "center",
   },
   formInput: {
     flex: 1,
   },
   formActions: {
-    flex: 1,
     width: "100%",
     alignItems: "stretch",
     paddingHorizontal: 16,
     gap: 8,
   },
   numbersList: {
-    flex: 2,
+    flex: 3,
     width: "100%",
     gap: 16,
   },

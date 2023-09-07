@@ -1,6 +1,16 @@
+import { FC } from "react";
+
 import { StyleSheet, Text, View } from "react-native";
 
-export const RNGItem = ({ number: { random, seed, index } }) => {
+interface Props {
+  number: {
+    random: number;
+    seed: number;
+    index: number;
+  };
+}
+
+export const RNGItem: FC<Props> = ({ number: { random, seed, index } }) => {
   return (
     <View style={styles.wrapper}>
       <View style={styles.textWrapper}>
@@ -42,6 +52,5 @@ const styles = StyleSheet.create({
   },
   textWrapper: {
     flexDirection: "row",
-    // alignItems: "flex-end",
   },
 });

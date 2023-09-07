@@ -1,9 +1,21 @@
-import { forwardRef, useState } from "react";
-import { useController } from "react-hook-form";
+import { FC, useState } from "react";
+import { Control, FieldValue, useController } from "react-hook-form";
 
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TextInputProps,
+  View,
+} from "react-native";
 
-export const CustomInput = (props) => {
+interface Props extends TextInputProps {
+  name: string;
+  control: Control<any>;
+  label?: string;
+}
+
+export const CustomInput: FC<Props> = (props) => {
   const { name, control } = props;
 
   const [focused, setFocused] = useState(false);
