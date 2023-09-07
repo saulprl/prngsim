@@ -6,6 +6,7 @@ import { ConstantMultiplier } from "../algorithms/constant-multiplier";
 import { Linear } from "../algorithms/linear";
 import { MiddleSquare } from "../algorithms/middle-square";
 import { Multiplicative } from "../algorithms/multiplicative";
+import { Additive } from "../algorithms/additive";
 
 export const algorithms = {
   "middle-square": {
@@ -13,16 +14,20 @@ export const algorithms = {
     algo: MiddleSquare,
   },
   "linear-congruential": {
-    name: "Congruencia lineal",
+    name: "Congruencial lineal",
     algo: Linear,
   },
   "multiplicative-congruential": {
-    name: "Congruencia multiplicativa",
+    name: "Congruencial multiplicativo",
     algo: Multiplicative,
   },
   "constant-multiplier": {
     name: "Multiplicador constante",
     algo: ConstantMultiplier,
+  },
+  "additive-congruential": {
+    name: "Congruencial aditivo",
+    algo: Additive,
   },
 };
 
@@ -58,7 +63,9 @@ export const AlgorithmSelect: FC<Props> = ({ selectedAlgorithm, onSelect }) => {
 
 const styles = StyleSheet.create({
   wrapper: {
-    height: "10%",
+    height: 64,
+    borderBottomWidth: 2,
+    borderBottomColor: "#ccc",
   },
   radioGroup: {
     gap: 8,
