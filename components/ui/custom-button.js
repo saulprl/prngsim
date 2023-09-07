@@ -11,10 +11,14 @@ export const CustomButton = (props) => {
         style={[styles.button, rest?.style]}
         android_ripple={{ color: "#b00b41" }}
       >
-        <Text style={styles.title}>{children}</Text>
+        {children}
       </Pressable>
     </View>
   );
+};
+
+CustomButton.Title = function CustomButtonTitle(props) {
+  return <Text style={[styles.title, props?.style]}>{props.children}</Text>;
 };
 
 const styles = StyleSheet.create({

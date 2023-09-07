@@ -63,7 +63,7 @@ export const MiddleSquare = () => {
       </View>
       <View style={styles.formActions}>
         <CustomButton onPress={handleSubmit(generateNumbers)}>
-          Generar
+          <CustomButton.Title>Generar</CustomButton.Title>
         </CustomButton>
       </View>
       <View style={styles.numbersList}>

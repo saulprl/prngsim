@@ -9,7 +9,7 @@ import { RNGItem } from "../ui/rng-item";
 
 export const ConstantMultiplier = () => {
   const [numbers, setNumbers] = useState([]);
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, reset } = useForm();
 
   const generateNumbers = (data) => {
     setNumbers([]);
@@ -43,6 +43,15 @@ export const ConstantMultiplier = () => {
     }
 
     setNumbers(numbers);
+  };
+
+  const handleClear = () => {
+    setNumbers([]);
+    reset({
+      seed: "",
+      a: "",
+      n: "",
+    });
   };
 
   return (
@@ -81,7 +90,20 @@ export const ConstantMultiplier = () => {
       </View>
       <View style={styles.formActions}>
         <CustomButton onPress={handleSubmit(generateNumbers)}>
-          Generar
+          <CustomButton.Title>Generar</CustomButton.Title>
+        </CustomButton>
+        <CustomButton
+          style={{
+            backgroundColor: "white",
+            borderWidth: 1,
+            borderColor: "#aaa",
+            borderRadius: 8,
+          }}
+          onPress={handleClear}
+        >
+          <CustomButton.Title style={{ color: "#aaa" }}>
+            Limpiar
+          </CustomButton.Title>
         </CustomButton>
       </View>
       <View style={styles.numbersList}>
