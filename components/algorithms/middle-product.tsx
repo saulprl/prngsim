@@ -1,60 +1,65 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useForm } from "react-hook-form";
 
-import { FlatList, StyleSheet, View } from "react-native";
-
-import { CustomButton, CustomButtonTitle } from "../ui/custom-button";
+import { FlatList, ScrollView, StyleSheet, View } from "react-native";
 import { CustomInput } from "../ui/custom-input";
+import { CustomButton, CustomButtonTitle } from "../ui/custom-button";
 import { RNGItem } from "../ui/rng-item";
 
-export interface LinearForm {
-  seed: string;
-  g: string;
-  k: string;
-  c: string;
+interface MiddleSquareForm {
+  x0: string;
+  x1: string;
+  n: string;
 }
 
-export const Linear = () => {
+export const MiddleProduct = () => {
   const [numbers, setNumbers] = useState<RNGItem[]>([]);
-  const { control, handleSubmit, reset } = useForm<LinearForm>();
+  const { control, handleSubmit, reset, setFocus } =
+    useForm<MiddleSquareForm>();
 
-  const generateNumbers = (data: LinearForm) => {
+  const generateNumbers = (data: MiddleSquareForm) => {
     setNumbers([]);
+    const digits = data.x0.length;
 
-    const g = +data.g;
-    const k = +data.k;
-    const c = +data.c;
-    let seed = +data.seed;
+    if (digits < 4 || digits !== data.x1.length) return;
 
-    const multiplier = 1 + 4 * k;
-    const modulus = Math.pow(2, g);
+    const x0 = +data.x0;
+    const x1 = +data.x1;
+    const n = +data.n;
 
-    const numbers: RNGItem[] = [];
+    const seeds = [x0, x1];
 
-    for (let i = 0; i < modulus; i++) {
-      seed = (multiplier * seed + c) % modulus;
-      const random = seed / (modulus - 1);
+    for (let i = 0; i < n; i++) {
+      const product = seeds[i] * seeds[i + 1];
+      const productString = product.toString();
+      const startIndex = Math.floor((productString.length - digits) / 2);
+      const endIndex = startIndex + digits;
 
+      const nextSeed = +productString.substring(startIndex, endIndex);
+      const random = nextSeed / Math.pow(10, digits);
+
+      seeds.push(nextSeed);
       const generatedNumber = {
         index: i + 1,
         random,
-        seed,
+        seed: nextSeed,
       };
 
-      numbers.push(generatedNumber);
+      setNumbers((prev) => [...prev, generatedNumber]);
     }
-
-    setNumbers(numbers);
   };
+
+  useEffect(() => {
+    setFocus("x0");
+  }, [setFocus]);
 
   const handleClear = () => {
     setNumbers([]);
     reset({
-      seed: "",
-      g: "",
-      k: "",
-      c: "",
+      x0: "",
+      x1: "",
+      n: "",
     });
   };
 
@@ -63,40 +68,34 @@ export const Linear = () => {
       <View style={styles.form}>
         <View style={styles.formInput}>
           <CustomInput
-            name="seed"
+            name="x0"
             control={control}
-            label="Semilla"
-            placeholder="Semilla"
+            label="Semilla 1"
+            placeholder="x0"
             selectionColor="#e91e63"
             keyboardType="numeric"
+            onSubmitEditing={() => setFocus("x1")}
+            onEndEditing={() => setFocus("x1")}
+            returnKeyType="next"
           />
         </View>
         <View style={styles.formInput}>
           <CustomInput
-            name="g"
+            name="x1"
             control={control}
-            label="g"
-            placeholder="g"
+            label="Semilla 2"
+            placeholder="x1"
             selectionColor="#e91e63"
             keyboardType="numeric"
+            onSubmitEditing={() => setFocus("n")}
           />
         </View>
         <View style={styles.formInput}>
           <CustomInput
-            name="k"
+            name="n"
             control={control}
-            label="k"
-            placeholder="k"
-            selectionColor="#e91e63"
-            keyboardType="numeric"
-          />
-        </View>
-        <View style={styles.formInput}>
-          <CustomInput
-            name="c"
-            control={control}
-            label="c"
-            placeholder="c"
+            label="n"
+            placeholder="n"
             selectionColor="#e91e63"
             keyboardType="numeric"
           />
@@ -112,7 +111,7 @@ export const Linear = () => {
       </View>
       <View style={styles.numbersList}>
         <FlatList
-          contentContainerStyle={{ padding: 16 }}
+          contentContainerStyle={{ paddingHorizontal: 16 }}
           data={numbers}
           renderItem={({ item }) => <RNGItem number={item} />}
         />
@@ -126,15 +125,15 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 16,
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     width: "100%",
   },
   form: {
     width: "100%",
     paddingHorizontal: 16,
     gap: 16,
-    flexWrap: "wrap",
     flexDirection: "row",
+    flexWrap: "wrap",
     alignItems: "center",
   },
   formInput: {
@@ -147,7 +146,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   numbersList: {
-    flex: 3,
+    flex: 2,
     width: "100%",
     gap: 16,
   },

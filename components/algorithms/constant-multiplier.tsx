@@ -99,14 +99,12 @@ export const ConstantMultiplier = () => {
           <CustomButtonTitle>Generar</CustomButtonTitle>
         </CustomButton>
         <CustomButton variant="outlined" onPress={handleClear}>
-          <CustomButtonTitle variant="outlined">
-            Limpiar
-          </CustomButtonTitle>
+          <CustomButtonTitle variant="outlined">Limpiar</CustomButtonTitle>
         </CustomButton>
       </View>
       <View style={styles.numbersList}>
         <FlatList
-          contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 16 }}
+          contentContainerStyle={{ padding: 16 }}
           data={numbers}
           renderItem={({ item }) => <RNGItem number={item} />}
         />

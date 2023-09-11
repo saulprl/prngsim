@@ -2,16 +2,21 @@ import { FC } from "react";
 
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
+import { Additive } from "../algorithms/additive";
 import { ConstantMultiplier } from "../algorithms/constant-multiplier";
 import { Linear } from "../algorithms/linear";
-import { MiddleSquare } from "../algorithms/middle-square";
 import { Multiplicative } from "../algorithms/multiplicative";
-import { Additive } from "../algorithms/additive";
+import { MiddleProduct } from "../algorithms/middle-product";
+import { MiddleSquare } from "../algorithms/middle-square";
 
 export const algorithms = {
   "middle-square": {
     name: "Cuadrados medios",
     algo: MiddleSquare,
+  },
+  "middle-product": {
+    name: "Productos medios",
+    algo: MiddleProduct,
   },
   "linear-congruential": {
     name: "Congruencial lineal",

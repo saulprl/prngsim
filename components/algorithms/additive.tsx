@@ -137,11 +137,11 @@ export const Additive = () => {
         </CustomButton>
       </View>
       <View style={styles.numbersList}>
-        <ScrollView contentContainerStyle={{ paddingHorizontal: 16 }}>
-          {numbers.map((number, index) => (
-            <RNGItem key={`${number}-${index}`} number={number} />
-          ))}
-        </ScrollView>
+        <FlatList
+          contentContainerStyle={{ padding: 16 }}
+          data={numbers}
+          renderItem={({ item }) => <RNGItem number={item} />}
+        />
       </View>
     </View>
   );

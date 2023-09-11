@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { useForm } from "react-hook-form";
 
-import { ScrollView, StyleSheet, View } from "react-native";
+import { FlatList, ScrollView, StyleSheet, View } from "react-native";
 import { CustomInput } from "../ui/custom-input";
 import { CustomButton, CustomButtonTitle } from "../ui/custom-button";
 import { RNGItem } from "../ui/rng-item";
@@ -84,11 +84,11 @@ export const MiddleSquare = () => {
         </CustomButton>
       </View>
       <View style={styles.numbersList}>
-        <ScrollView contentContainerStyle={{ paddingHorizontal: 16 }}>
-          {numbers.map((number, index) => (
-            <RNGItem key={`${number}-${index}`} number={number} />
-          ))}
-        </ScrollView>
+        <FlatList
+          contentContainerStyle={{ padding: 16 }}
+          data={numbers}
+          renderItem={({ item }) => <RNGItem number={item} />}
+        />
       </View>
     </View>
   );
