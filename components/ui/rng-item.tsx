@@ -6,26 +6,31 @@ export interface RNGItem {
   random: number;
   seed: number;
   index: number;
+  digits?: number;
 }
 
 interface Props {
   number: RNGItem;
 }
 
-export const RNGItem: FC<Props> = ({ number: { random, seed, index } }) => {
+export const RNGItem: FC<Props> = ({
+  number: { random, seed, index, digits },
+}) => {
   return (
     <View style={styles.wrapper}>
       <View style={styles.textWrapper}>
         <Text style={styles.title}>r</Text>
         <Text style={styles.subscript}>{index}</Text>
         <Text style={styles.title}> = </Text>
-        <Text style={styles.title}>{random.toFixed(6)}</Text>
+        <Text style={styles.title}>{random.toFixed(digits || 6)}</Text>
       </View>
       <View style={styles.textWrapper}>
         <Text style={styles.title}>x</Text>
         <Text style={styles.subscript}>{index}</Text>
         <Text style={styles.title}> = </Text>
-        <Text style={styles.title}>{seed}</Text>
+        <Text style={styles.title}>
+          {digits ? seed.toString().padStart(digits, "0") : seed}
+        </Text>
       </View>
     </View>
   );

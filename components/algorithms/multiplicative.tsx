@@ -1,12 +1,14 @@
 import { useState } from "react";
 
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import { useForm } from "react-hook-form";
 
 import { CustomInput } from "../ui/custom-input";
 import { CustomButton, CustomButtonTitle } from "../ui/custom-button";
 import { RNGItem } from "../ui/rng-item";
+import { InfoModal, InfoModalContent, InfoModalTitle } from "../ui/modal";
+import { MathJax } from "../ui/mathjax";
 
 interface MultiplicativeForm {
   seed: string;
@@ -15,6 +17,7 @@ interface MultiplicativeForm {
 }
 
 export const Multiplicative = () => {
+  const [openModal, setOpenModal] = useState(false);
   const [numbers, setNumbers] = useState<RNGItem[]>([]);
   const { control, handleSubmit, reset } = useForm<MultiplicativeForm>();
 
@@ -28,6 +31,12 @@ export const Multiplicative = () => {
     const multiplier = 3 + 8 * k;
     const modulus = Math.pow(2, g);
     const period = modulus / 4;
+
+    if (seed === 0 || g < 1 || g % 1 !== 0 || k < 0 || k % 1 !== 0) {
+      setOpenModal(true);
+
+      return;
+    }
 
     const numbers: RNGItem[] = [];
 
@@ -55,6 +64,8 @@ export const Multiplicative = () => {
       k: "",
     });
   };
+
+  const handleCloseModal = () => setOpenModal(false);
 
   return (
     <View style={styles.container}>
@@ -94,9 +105,27 @@ export const Multiplicative = () => {
         <CustomButton onPress={handleSubmit(generateNumbers)}>
           <CustomButtonTitle>Generar</CustomButtonTitle>
         </CustomButton>
-        <CustomButton variant="outlined" onPress={handleClear}>
-          <CustomButtonTitle variant="outlined">Limpiar</CustomButtonTitle>
-        </CustomButton>
+        <View style={styles.formActionsRow}>
+          <View style={styles.formActionsRowItem}>
+            <CustomButton variant="outlined" onPress={handleClear}>
+              <CustomButtonTitle variant="outlined">Limpiar</CustomButtonTitle>
+            </CustomButton>
+          </View>
+          <View style={styles.formActionsRowItem}>
+            <CustomButton
+              variant="outlined"
+              onPress={() => setOpenModal(true)}
+              style={{ borderColor: "#0080ff" }}
+            >
+              <CustomButtonTitle
+                variant="outlined"
+                style={{ color: "#0080ff" }}
+              >
+                Info
+              </CustomButtonTitle>
+            </CustomButton>
+          </View>
+        </View>
       </View>
       <View style={styles.numbersList}>
         <FlatList
@@ -105,6 +134,56 @@ export const Multiplicative = () => {
           renderItem={({ item }) => <RNGItem number={item} />}
         />
       </View>
+      <InfoModal open={openModal} onClose={handleCloseModal}>
+        <InfoModalTitle>Algoritmo congruencial multiplicativo</InfoModalTitle>
+        <InfoModalContent>
+          <Text>
+            Surge del algoritmo{" "}
+            <Text style={styles.bold}>congruencial lineal</Text> cuando{" "}
+            <Text style={styles.bold}>c = 0</Text>. La{" "}
+            <Text style={styles.bold}>ecuación recursiva</Text> es:
+          </Text>
+          <View style={styles.equationWrapper}>
+            <MathJax>{`\\(x_{i+1} = (a \\cdot x_i) mod (m)\\)`}</MathJax>
+          </View>
+          <View style={styles.equationWrapper}>
+            <MathJax>{`\\(i = 0,1,2,3,...,n\\)`}</MathJax>
+          </View>
+          <Text>Donde:</Text>
+          <View style={styles.inlineEquationWrapper}>
+            <MathJax>{`\\(x_0\\)`}</MathJax>
+            <Text>es la semilla.</Text>
+          </View>
+          <View style={styles.inlineEquationWrapper}>
+            <MathJax>{`\\(a\\)`}</MathJax>
+            <Text>es la constante multiplicativa.</Text>
+          </View>
+          <View style={styles.inlineEquationWrapper}>
+            <MathJax>{`\\(m\\)`}</MathJax>
+            <Text>es el módulo.</Text>
+          </View>
+          <Text>Condiciones:</Text>
+          <View style={styles.inlineEquationWrapper}>
+            <MathJax>{`\\(m = 2^g\\)`}</MathJax>
+            <Text>donde g debe ser entero.</Text>
+          </View>
+          <View style={styles.inlineEquationWrapper}>
+            <MathJax>{`\\(a = 3 + 8k\\)`}</MathJax>
+            <Text>o</Text>
+            <MathJax>{`\\(5 + 8k\\)`}</MathJax>
+            <Text>donde k debe ser entero.</Text>
+          </View>
+          <View style={styles.inlineEquationWrapper}>
+            <MathJax>{`\\(N = m/4 = 2^{g-2}\\)`}</MathJax>
+            <Text>donde N es el período máximo.</Text>
+          </View>
+        </InfoModalContent>
+        <View style={{ width: "100%" }}>
+          <CustomButton onPress={handleCloseModal}>
+            <CustomButtonTitle>Cerrar</CustomButtonTitle>
+          </CustomButton>
+        </View>
+      </InfoModal>
     </View>
   );
 };
@@ -134,9 +213,45 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     gap: 8,
   },
+  formActionsRow: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 8,
+  },
+  formActionsRowItem: {
+    flex: 1,
+  },
   numbersList: {
     flex: 3,
     width: "100%",
     gap: 16,
+  },
+  bold: {
+    fontWeight: "bold",
+    color: "#e91e63",
+  },
+  subscript: {
+    fontSize: 6,
+    lineHeight: 32,
+    fontWeight: "bold",
+    color: "#e91e63",
+  },
+  equationWrapper: {
+    height: 40,
+    padding: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    overflow: "hidden",
+  },
+  inlineEquationWrapper: {
+    padding: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    width: "100%",
+    gap: 8,
+    flexWrap: "wrap",
   },
 });

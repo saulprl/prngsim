@@ -1,15 +1,19 @@
 import { FC } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 interface Props {
   value: number;
+  index: number;
+  onRemove: (index: number) => void;
 }
 
-export const SequenceItem: FC<Props> = ({ value }) => {
+export const SequenceItem: FC<Props> = ({ value, index, onRemove }) => {
+  const handleRemove = () => onRemove(index);
+
   return (
-    <View style={styles.container}>
+    <Pressable onPress={handleRemove} style={styles.container}>
       <Text style={styles.text}>{value}</Text>
-    </View>
+    </Pressable>
   );
 };
 

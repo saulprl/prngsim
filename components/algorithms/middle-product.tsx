@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 
 import { useForm } from "react-hook-form";
 
-import { FlatList, ScrollView, StyleSheet, View } from "react-native";
+import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import { CustomInput } from "../ui/custom-input";
 import { CustomButton, CustomButtonTitle } from "../ui/custom-button";
 import { RNGItem } from "../ui/rng-item";
+import { InfoModal, InfoModalContent, InfoModalTitle } from "../ui/modal";
+import { MathJax } from "../ui/mathjax";
 
 interface MiddleSquareForm {
   x0: string;
@@ -14,6 +16,7 @@ interface MiddleSquareForm {
 }
 
 export const MiddleProduct = () => {
+  const [openModal, setOpenModal] = useState(false);
   const [numbers, setNumbers] = useState<RNGItem[]>([]);
   const { control, handleSubmit, reset, setFocus } =
     useForm<MiddleSquareForm>();
@@ -22,11 +25,15 @@ export const MiddleProduct = () => {
     setNumbers([]);
     const digits = data.x0.length;
 
-    if (digits < 4 || digits !== data.x1.length) return;
-
     const x0 = +data.x0;
     const x1 = +data.x1;
     const n = +data.n;
+
+    if (digits < 4 || digits !== data.x1.length || n === 0) {
+      setOpenModal(true);
+
+      return;
+    }
 
     const seeds = [x0, x1];
 
@@ -44,6 +51,7 @@ export const MiddleProduct = () => {
         index: i + 1,
         random,
         seed: nextSeed,
+        digits,
       };
 
       setNumbers((prev) => [...prev, generatedNumber]);
@@ -62,6 +70,8 @@ export const MiddleProduct = () => {
       n: "",
     });
   };
+
+  const handleCloseModal = () => setOpenModal(false);
 
   return (
     <View style={styles.container}>
@@ -105,9 +115,27 @@ export const MiddleProduct = () => {
         <CustomButton onPress={handleSubmit(generateNumbers)}>
           <CustomButtonTitle>Generar</CustomButtonTitle>
         </CustomButton>
-        <CustomButton variant="outlined" onPress={handleClear}>
-          <CustomButtonTitle variant="outlined">Limpiar</CustomButtonTitle>
-        </CustomButton>
+        <View style={styles.formActionsRow}>
+          <View style={styles.formActionsRowItem}>
+            <CustomButton variant="outlined" onPress={handleClear}>
+              <CustomButtonTitle variant="outlined">Limpiar</CustomButtonTitle>
+            </CustomButton>
+          </View>
+          <View style={styles.formActionsRowItem}>
+            <CustomButton
+              variant="outlined"
+              onPress={() => setOpenModal(true)}
+              style={{ borderColor: "#0080ff" }}
+            >
+              <CustomButtonTitle
+                variant="outlined"
+                style={{ color: "#0080ff" }}
+              >
+                Info
+              </CustomButtonTitle>
+            </CustomButton>
+          </View>
+        </View>
       </View>
       <View style={styles.numbersList}>
         <FlatList
@@ -116,6 +144,36 @@ export const MiddleProduct = () => {
           renderItem={({ item }) => <RNGItem number={item} />}
         />
       </View>
+      <InfoModal open={openModal} onClose={handleCloseModal}>
+        <InfoModalTitle>Algoritmo de productos medios</InfoModalTitle>
+        <InfoModalContent>
+          <Text>
+            Este algoritmo requiere{" "}
+            <Text style={styles.bold}>dos semillas</Text> de{" "}
+            <Text style={styles.bold}>D dígitos</Text>.
+          </Text>
+          <View style={styles.inlineEquationWrapper}>
+            <MathJax>{`\\(D > 3\\)`}</MathJax>
+          </View>
+          <View style={styles.inlineEquationWrapper}>
+            <MathJax>{`\\(x_0\\)`}</MathJax>
+            <Text>y</Text>
+            <MathJax>{`\\(x_1\\)`}</MathJax>
+            <Text>
+              deben ser de <Text style={styles.bold}>D dígitos</Text>.
+            </Text>
+          </View>
+          <View style={styles.inlineEquationWrapper}>
+            <MathJax>{`\\(n\\)`}</MathJax>
+            <Text>es la cantidad de números aleatorios deseada.</Text>
+          </View>
+        </InfoModalContent>
+        <View style={{ width: "100%" }}>
+          <CustomButton onPress={handleCloseModal}>
+            <CustomButtonTitle>Cerrar</CustomButtonTitle>
+          </CustomButton>
+        </View>
+      </InfoModal>
     </View>
   );
 };
@@ -145,9 +203,45 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     gap: 8,
   },
+  formActionsRow: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 8,
+  },
+  formActionsRowItem: {
+    flex: 1,
+  },
   numbersList: {
     flex: 2,
     width: "100%",
     gap: 16,
+  },
+  bold: {
+    fontWeight: "bold",
+    color: "#e91e63",
+  },
+  subscript: {
+    fontSize: 6,
+    lineHeight: 32,
+    fontWeight: "bold",
+    color: "#e91e63",
+  },
+  equationWrapper: {
+    height: 40,
+    padding: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    overflow: "hidden",
+  },
+  inlineEquationWrapper: {
+    padding: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    width: "100%",
+    gap: 8,
+    flexWrap: "wrap",
   },
 });

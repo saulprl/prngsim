@@ -18,6 +18,10 @@ export const algorithms = {
     name: "Productos medios",
     algo: MiddleProduct,
   },
+  "constant-multiplier": {
+    name: "Multiplicador constante",
+    algo: ConstantMultiplier,
+  },
   "linear-congruential": {
     name: "Congruencial lineal",
     algo: Linear,
@@ -25,10 +29,6 @@ export const algorithms = {
   "multiplicative-congruential": {
     name: "Congruencial multiplicativo",
     algo: Multiplicative,
-  },
-  "constant-multiplier": {
-    name: "Multiplicador constante",
-    algo: ConstantMultiplier,
   },
   "additive-congruential": {
     name: "Congruencial aditivo",

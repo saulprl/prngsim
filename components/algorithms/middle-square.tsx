@@ -2,10 +2,12 @@ import { useState } from "react";
 
 import { useForm } from "react-hook-form";
 
-import { FlatList, ScrollView, StyleSheet, View } from "react-native";
+import { FlatList, Text, StyleSheet, View } from "react-native";
 import { CustomInput } from "../ui/custom-input";
 import { CustomButton, CustomButtonTitle } from "../ui/custom-button";
 import { RNGItem } from "../ui/rng-item";
+import { InfoModal, InfoModalContent, InfoModalTitle } from "../ui/modal";
+import { MathJax } from "../ui/mathjax";
 
 interface MiddleSquareForm {
   seed: string;
@@ -13,6 +15,7 @@ interface MiddleSquareForm {
 }
 
 export const MiddleSquare = () => {
+  const [openModal, setOpenModal] = useState(false);
   const [numbers, setNumbers] = useState<RNGItem[]>([]);
   const { control, handleSubmit, reset } = useForm<MiddleSquareForm>();
 
@@ -23,7 +26,11 @@ export const MiddleSquare = () => {
     const n = +data.n;
     const digits = seed.toString().length;
 
-    if (digits < 4) return;
+    if (digits < 4 || n === 0) {
+      setOpenModal(true);
+
+      return;
+    }
 
     for (let i = 0; i < n; i++) {
       const square = Math.pow(seed, 2);
@@ -38,6 +45,7 @@ export const MiddleSquare = () => {
         index: i + 1,
         random,
         seed,
+        digits,
       };
       setNumbers((prev) => [...prev, generatedNumber]);
     }
@@ -50,6 +58,8 @@ export const MiddleSquare = () => {
       n: "",
     });
   };
+
+  const handleCloseModal = () => setOpenModal(false);
 
   return (
     <View style={styles.container}>
@@ -79,9 +89,27 @@ export const MiddleSquare = () => {
         <CustomButton onPress={handleSubmit(generateNumbers)}>
           <CustomButtonTitle>Generar</CustomButtonTitle>
         </CustomButton>
-        <CustomButton variant="outlined" onPress={handleClear}>
-          <CustomButtonTitle variant="outlined">Limpiar</CustomButtonTitle>
-        </CustomButton>
+        <View style={styles.formActionsRow}>
+          <View style={styles.formActionsRowItem}>
+            <CustomButton variant="outlined" onPress={handleClear}>
+              <CustomButtonTitle variant="outlined">Limpiar</CustomButtonTitle>
+            </CustomButton>
+          </View>
+          <View style={styles.formActionsRowItem}>
+            <CustomButton
+              variant="outlined"
+              onPress={() => setOpenModal(true)}
+              style={{ borderColor: "#0080FF" }}
+            >
+              <CustomButtonTitle
+                variant="outlined"
+                style={{ color: "#0080FF" }}
+              >
+                Info
+              </CustomButtonTitle>
+            </CustomButton>
+          </View>
+        </View>
       </View>
       <View style={styles.numbersList}>
         <FlatList
@@ -90,6 +118,36 @@ export const MiddleSquare = () => {
           renderItem={({ item }) => <RNGItem number={item} />}
         />
       </View>
+      <InfoModal open={openModal} onClose={handleCloseModal}>
+        <InfoModalTitle>Algoritmo de cuadrados medios</InfoModalTitle>
+        <InfoModalContent>
+          <Text>
+            Propuesto por <Text style={styles.bold}>John Von Neumann</Text> en{" "}
+            <Text style={styles.bold}>1949</Text>. Fácil de entender e
+            implementar, pero <Text style={styles.bold}>limitado</Text> en
+            cuanto a <Text style={styles.bold}>calidad</Text> y{" "}
+            <Text style={styles.bold}>longitud</Text>.
+          </Text>
+          <View style={styles.inlineEquationWrapper}>
+            <MathJax>{`\\(D > 3\\)`}</MathJax>
+          </View>
+          <View style={styles.inlineEquationWrapper}>
+            <MathJax>{`\\(x_0\\)`}</MathJax>
+            <Text>
+              debe ser de <Text style={styles.bold}>D dígitos</Text>.
+            </Text>
+          </View>
+          <View style={styles.inlineEquationWrapper}>
+            <MathJax>{`\\(n\\)`}</MathJax>
+            <Text>es la cantidad de números aleatorios deseada.</Text>
+          </View>
+        </InfoModalContent>
+        <View style={{ width: "100%" }}>
+          <CustomButton onPress={handleCloseModal}>
+            <CustomButtonTitle>Cerrar</CustomButtonTitle>
+          </CustomButton>
+        </View>
+      </InfoModal>
     </View>
   );
 };
@@ -119,9 +177,45 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     gap: 8,
   },
+  formActionsRow: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 8,
+  },
+  formActionsRowItem: {
+    flex: 1,
+  },
   numbersList: {
     flex: 2,
     width: "100%",
     gap: 16,
+  },
+  bold: {
+    fontWeight: "bold",
+    color: "#e91e63",
+  },
+  subscript: {
+    fontSize: 6,
+    lineHeight: 32,
+    fontWeight: "bold",
+    color: "#e91e63",
+  },
+  equationWrapper: {
+    height: 40,
+    padding: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    overflow: "hidden",
+  },
+  inlineEquationWrapper: {
+    padding: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    width: "100%",
+    gap: 8,
+    flexWrap: "wrap",
   },
 });
