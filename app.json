@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "PRNGSim",
+    "name": "pseudoRNG",
     "slug": "RNGsim",
-    "version": "1.0.2",
+    "version": "1.2.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
