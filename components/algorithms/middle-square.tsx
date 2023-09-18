@@ -6,7 +6,12 @@ import { FlatList, Text, StyleSheet, View } from "react-native";
 import { CustomInput } from "../ui/custom-input";
 import { CustomButton, CustomButtonTitle } from "../ui/custom-button";
 import { RNGItem } from "../ui/rng-item";
-import { InfoModal, InfoModalContent, InfoModalTitle } from "../ui/modal";
+import {
+  ErrorModal,
+  InfoModal,
+  InfoModalContent,
+  InfoModalTitle,
+} from "../ui/modal";
 import { MathJax } from "../ui/mathjax";
 
 interface MiddleSquareForm {
@@ -17,6 +22,7 @@ interface MiddleSquareForm {
 export const MiddleSquare = () => {
   const [openModal, setOpenModal] = useState(false);
   const [numbers, setNumbers] = useState<RNGItem[]>([]);
+  const [error, setError] = useState<string>(null);
   const { control, handleSubmit, reset } = useForm<MiddleSquareForm>();
 
   const generateNumbers = (data: MiddleSquareForm) => {
@@ -26,8 +32,14 @@ export const MiddleSquare = () => {
     const n = +data.n;
     const digits = seed.toString().length;
 
-    if (digits < 4 || n === 0) {
-      setOpenModal(true);
+    if (digits < 4) {
+      setError("La semilla debe tener al menos 4 dígitos.");
+
+      return;
+    }
+
+    if (n === 0) {
+      setError("La cantidad de números aleatorios debe ser mayor a 0.");
 
       return;
     }
@@ -148,6 +160,7 @@ export const MiddleSquare = () => {
           </CustomButton>
         </View>
       </InfoModal>
+      <ErrorModal open={error} onClose={() => setError(null)} />
     </View>
   );
 };

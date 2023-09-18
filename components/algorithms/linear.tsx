@@ -8,7 +8,12 @@ import { MathJaxSvg } from "react-native-mathjax-text-svg";
 import { CustomButton, CustomButtonTitle } from "../ui/custom-button";
 import { CustomInput } from "../ui/custom-input";
 import { RNGItem } from "../ui/rng-item";
-import { InfoModal, InfoModalContent, InfoModalTitle } from "../ui/modal";
+import {
+  ErrorModal,
+  InfoModal,
+  InfoModalContent,
+  InfoModalTitle,
+} from "../ui/modal";
 import { MathJax } from "../ui/mathjax";
 import { calculateGCD } from "@/utils/gcd";
 
@@ -21,6 +26,7 @@ export interface LinearForm {
 
 export const Linear = () => {
   const [openModal, setOpenModal] = useState(false);
+  const [error, setError] = useState<string>(null);
   const [numbers, setNumbers] = useState<RNGItem[]>([]);
   const { control, handleSubmit, reset } = useForm<LinearForm>();
 
@@ -35,15 +41,26 @@ export const Linear = () => {
     const multiplier = 1 + 4 * k;
     const modulus = Math.pow(2, g);
 
-    if (
-      seed === 0 ||
-      g <= 0 ||
-      g % 1 !== 0 ||
-      k <= 0 ||
-      k % 1 !== 0 ||
-      calculateGCD(c, modulus) !== 1
-    ) {
-      setOpenModal(true);
+    if (seed <= 0) {
+      setError("La semilla debe ser mayor a 0.");
+
+      return;
+    }
+
+    if (g <= 0 || g % 1 !== 0) {
+      setError("g debe ser un número entero mayor a 0.");
+
+      return;
+    }
+
+    if (k <= 0 || k % 1 !== 0) {
+      setError("k debe ser un número entero mayor o igual a 0.");
+
+      return;
+    }
+
+    if (calculateGCD(c, modulus) !== 1) {
+      setError("c debe ser primo relativo a m.");
 
       return;
     }
@@ -213,6 +230,7 @@ export const Linear = () => {
           </CustomButton>
         </View>
       </InfoModal>
+      <ErrorModal open={error} onClose={() => setError(null)} />
     </View>
   );
 };

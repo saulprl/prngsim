@@ -7,7 +7,12 @@ import { CustomInput } from "../ui/custom-input";
 import { CustomButton, CustomButtonTitle } from "../ui/custom-button";
 import { RNGItem } from "../ui/rng-item";
 import { SequenceItem } from "../ui/sequence-item";
-import { InfoModal, InfoModalContent, InfoModalTitle } from "../ui/modal";
+import {
+  ErrorModal,
+  InfoModal,
+  InfoModalContent,
+  InfoModalTitle,
+} from "../ui/modal";
 import { MathJax } from "../ui/mathjax";
 
 interface SequenceForm {
@@ -21,6 +26,7 @@ interface AdditiveForm {
 
 export const Additive = () => {
   const [openModal, setOpenModal] = useState(false);
+  const [error, setError] = useState<string>(null);
   const [sequence, setSequence] = useState<number[]>([]);
   const [numbers, setNumbers] = useState<RNGItem[]>([]);
 
@@ -55,8 +61,21 @@ export const Additive = () => {
     const sequenceCopy = [...sequence];
     const seqLength = sequenceCopy.length;
 
-    if (seqLength === 0 || modulus === 0 || n === 0) {
-      setOpenModal(true);
+    if (seqLength <= 0) {
+      setError("La secuencia debe tener al menos un número.");
+
+      return;
+    }
+
+    if (modulus <= 0) {
+      setError("El módulo debe ser mayor a 0.");
+
+      return;
+    }
+
+    if (n <= 0) {
+      setError("n debe ser mayor a 0.");
+
       return;
     }
 
@@ -215,6 +234,7 @@ export const Additive = () => {
           </CustomButton>
         </View>
       </InfoModal>
+      <ErrorModal open={error} onClose={() => setError(null)} />
     </View>
   );
 };

@@ -6,7 +6,7 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 import { CustomInput } from "../ui/custom-input";
 import { CustomButton, CustomButtonTitle } from "../ui/custom-button";
 import { RNGItem } from "../ui/rng-item";
-import { InfoModal, InfoModalContent, InfoModalTitle } from "../ui/modal";
+import { ErrorModal, InfoModal, InfoModalContent, InfoModalTitle } from "../ui/modal";
 import { MathJax } from "../ui/mathjax";
 
 interface ConstantMultiplierForm {
@@ -17,6 +17,7 @@ interface ConstantMultiplierForm {
 
 export const ConstantMultiplier = () => {
   const [openModal, setOpenModal] = useState(false);
+  const [error, setError] = useState<string>(null);
   const [numbers, setNumbers] = useState<RNGItem[]>([]);
   const { control, handleSubmit, reset } = useForm<ConstantMultiplierForm>();
 
@@ -29,8 +30,14 @@ export const ConstantMultiplier = () => {
 
     const digits = seed.toString().length;
 
-    if (digits < 4 || a.toString().length !== digits || n === 0) {
-      setOpenModal(true);
+    if (digits < 4 || a.toString().length !== digits) {
+      setError("La semilla y la constante deben tener al menos 4 dígitos.");
+
+      return;
+    }
+
+    if (n <= 0) {
+      setError("La cantidad de números aleatorios debe ser mayor a 0.");
 
       return;
     }
@@ -173,6 +180,7 @@ export const ConstantMultiplier = () => {
           </CustomButton>
         </View>
       </InfoModal>
+      <ErrorModal open={error} onClose={() => setError(null)} />
     </View>
   );
 };

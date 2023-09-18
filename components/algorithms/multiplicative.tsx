@@ -7,7 +7,12 @@ import { useForm } from "react-hook-form";
 import { CustomInput } from "../ui/custom-input";
 import { CustomButton, CustomButtonTitle } from "../ui/custom-button";
 import { RNGItem } from "../ui/rng-item";
-import { InfoModal, InfoModalContent, InfoModalTitle } from "../ui/modal";
+import {
+  ErrorModal,
+  InfoModal,
+  InfoModalContent,
+  InfoModalTitle,
+} from "../ui/modal";
 import { MathJax } from "../ui/mathjax";
 
 interface MultiplicativeForm {
@@ -18,6 +23,7 @@ interface MultiplicativeForm {
 
 export const Multiplicative = () => {
   const [openModal, setOpenModal] = useState(false);
+  const [error, setError] = useState<string>(null);
   const [numbers, setNumbers] = useState<RNGItem[]>([]);
   const { control, handleSubmit, reset } = useForm<MultiplicativeForm>();
 
@@ -32,8 +38,20 @@ export const Multiplicative = () => {
     const modulus = Math.pow(2, g);
     const period = modulus / 4;
 
-    if (seed === 0 || g < 1 || g % 1 !== 0 || k < 0 || k % 1 !== 0) {
-      setOpenModal(true);
+    if (seed <= 0) {
+      setError("La semilla debe ser mayor a 0.");
+
+      return;
+    }
+
+    if (g <= 0 || g % 1 !== 0) {
+      setError("g debe ser un número entero mayor a 0.");
+
+      return;
+    }
+
+    if (k <= 0 || k % 1 !== 0) {
+      setError("k debe ser un número entero mayor a 0.");
 
       return;
     }
@@ -184,6 +202,7 @@ export const Multiplicative = () => {
           </CustomButton>
         </View>
       </InfoModal>
+      <ErrorModal open={error} onClose={() => setError(null)} />
     </View>
   );
 };

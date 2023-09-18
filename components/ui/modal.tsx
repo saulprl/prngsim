@@ -1,5 +1,6 @@
 import { FC, ReactNode, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { CustomButton, CustomButtonTitle } from "./custom-button";
 
 interface Props {
   open: boolean;
@@ -21,6 +22,27 @@ export const InfoModal: FC<Props> = ({ open, onClose, children }) => {
       </Pressable>
     </Modal>
     // </View>
+  );
+};
+
+interface ErrorModalProps {
+  open: string | null;
+  onClose: () => void;
+}
+
+export const ErrorModal: FC<ErrorModalProps> = ({ open, onClose }) => {
+  return (
+    <InfoModal open={!!open} onClose={onClose}>
+      <InfoModalTitle>Error</InfoModalTitle>
+      <InfoModalContent>
+        <Text>{open}</Text>
+        <View style={{ width: "100%", paddingTop: 8 }}>
+          <CustomButton onPress={onClose}>
+            <CustomButtonTitle>Cerrar</CustomButtonTitle>
+          </CustomButton>
+        </View>
+      </InfoModalContent>
+    </InfoModal>
   );
 };
 
